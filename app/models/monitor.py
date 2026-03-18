@@ -17,6 +17,6 @@ class Monitor(Base):
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
     user: Mapped["User"] = relationship(back_populates="monitors")
-
+    checks: Mapped[list["Check"]] = relationship(back_populates="monitor")
 
 
