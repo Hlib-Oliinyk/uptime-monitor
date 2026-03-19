@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, or_, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import EmailStr
 
@@ -18,6 +18,15 @@ class UserRepository:
         stmt = select(User).where(User.email == user_email)
         result = await self.db.execute(stmt)
         return result.scalar_one_or_none()
+
+    async def user_exists(self, user_email: EmailStr, user_username: str) -> bool:
+        stmt = select(
+            exists().where(
+                or_(User.email == user_email, User.username == user_username)
+            )
+        )
+        result = await self.db.execute(stmt)
+        return result.scalar()
 
     async def create(self, **data) -> User:
         user = User(**data)
