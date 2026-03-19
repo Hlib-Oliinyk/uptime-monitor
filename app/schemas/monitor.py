@@ -9,6 +9,12 @@ class MonitorCreate(BaseModel):
     is_active: bool
 
 
+class MonitorUpdate(BaseModel):
+    url: HttpUrl | None = None
+    interval: int | None = None
+    is_active: bool | None = None
+
+
 class MonitorResponse(BaseModel):
     id: int
     url: HttpUrl
