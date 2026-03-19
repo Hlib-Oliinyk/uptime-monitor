@@ -1,19 +1,17 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, HttpUrl, Field
 
 
 class MonitorCreate(BaseModel):
-    url: str
-    interval: int
+    url: HttpUrl
+    interval: int = Field(ge=30)
     is_active: bool
-    user_id: int
-    created_at: datetime
 
 
 class MonitorResponse(BaseModel):
     id: int
-    url: str
+    url: HttpUrl
     interval: int
     is_active: bool
     user_id: int
