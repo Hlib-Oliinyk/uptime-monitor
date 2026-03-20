@@ -1,5 +1,7 @@
 from fastapi.responses import JSONResponse
+
 from app.exceptions.user import UserExists, UserNotFound
+from app.exceptions.monitor import MonitorNotFound
 
 
 def setup_exception_handler(app):
@@ -15,4 +17,11 @@ def setup_exception_handler(app):
         return JSONResponse(
             status_code=400,
             content={"details":"User already exists"}
+        )
+
+    @app.exception_handler(MonitorNotFound)
+    async def monitor_not_found_handler(request, exc):
+        return JSONResponse(
+            status_code=404,
+            content={"details":"Monitor not found"}
         )

@@ -1,0 +1,35 @@
+from typing import Sequence
+
+from app.repositories.monitor import MonitorRepository
+from app.models.monitor import Monitor
+from app.schemas.monitor import MonitorCreate, MonitorUpdate
+from app.exceptions.monitor import MonitorNotFound
+
+
+class MonitorService:
+    def __init__(self, repo: MonitorRepository):
+        self.repo = repo
+
+    async def create_monitor(self, user_id: int, data: MonitorCreate) -> Monitor:
+        monitor_dict = data.model_dump()
+        monitor_dict["user_id"] = user_id
+        return await self.repo.create(**monitor_dict)
+
+    async def get_monitor(self, monitor_id: int) -> Monitor:
+        monitor = await self.repo.get_by_id(monitor_id)
+        if monitor is None:
+            raise MonitorNotFound()
+        return monitor
+
+    async def get_all_monitor(self, user_id: int) -> Sequence[Monitor]:
+        user_monitors = await self.repo.get_all_by_user_id(user_id)
+        return user_monitors
+
+    async def update_monitor(self, monitor_id: int, data: MonitorUpdate) -> Monitor:
+        monitor = await self.get_monitor(monitor_id)
+        monitor_dict = data.model_dump()
+        return await self.repo.update(monitor, **monitor_dict)
+
+    async def delete_monitor(self, monitor_id: int) -> bool:
+        monitor = await self.get_monitor(monitor_id)
+        return await self.repo.delete(monitor)
