@@ -27,8 +27,7 @@ class MonitorService:
 
     async def update_monitor(self, monitor_id: int, data: MonitorUpdate) -> Monitor:
         monitor = await self.get_monitor(monitor_id)
-        monitor_dict = data.model_dump()
-        return await self.repo.update(monitor, **monitor_dict)
+        return await self.repo.update(monitor, data)
 
     async def delete_monitor(self, monitor_id: int) -> bool:
         monitor = await self.get_monitor(monitor_id)
