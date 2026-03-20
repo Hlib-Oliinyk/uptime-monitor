@@ -1,6 +1,7 @@
 from app.repositories.user import UserRepository
 from app.schemas.user import UserCreate
 from app.models.user import User
+from app.exceptions.user import UserExists, UserNotFound
 
 
 class UserService:
@@ -10,7 +11,7 @@ class UserService:
     async def create_user(self, data: UserCreate) -> User:
         exists = self.repo.user_exists(data.email, data.username)
         if exists:
-            raise # Add raise
+            raise UserExists()
 
         user_dict = data.model_dump()
         return await self.repo.create(**user_dict)
@@ -18,5 +19,5 @@ class UserService:
     async def get_user(self, user_id: int) -> User:
         user = await self.repo.get_by_id(user_id)
         if user is None:
-            raise # Add raise
+            raise UserNotFound()
         return user
