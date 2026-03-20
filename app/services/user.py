@@ -2,6 +2,7 @@ from app.repositories.user import UserRepository
 from app.schemas.user import UserCreate
 from app.models.user import User
 from app.exceptions.user import UserExists, UserNotFound
+from app.core.security import hash_password
 
 
 class UserService:
@@ -9,11 +10,13 @@ class UserService:
         self.repo = repo
 
     async def create_user(self, data: UserCreate) -> User:
-        exists = self.repo.user_exists(data.email, data.username)
+        exists = await self.repo.user_exists(data.email, data.username)
         if exists:
             raise UserExists()
 
         user_dict = data.model_dump()
+        user_dict["password"] = hash_password(user_dict.pop("password"))
+
         return await self.repo.create(**user_dict)
 
     async def get_user(self, user_id: int) -> User:
