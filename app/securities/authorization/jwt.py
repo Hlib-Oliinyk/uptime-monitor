@@ -1,4 +1,4 @@
-from jose import jwt
+from jose import jwt, JWTError
 from datetime import timedelta, datetime, timezone
 
 from app.core.config import settings
@@ -34,6 +34,14 @@ class JWTGenerator:
             data={"sub":str(user.id)}
         )
 
+    def get_details_from_token(self, token: str, secret_key: str) -> int:
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
+            user_id = int(payload.get("sub"))
+        except (JWTError, TypeError, ValueError):
+            raise # Add raise
+
+        return user_id
 
 def get_jwt_token() -> JWTGenerator:
     return JWTGenerator()
