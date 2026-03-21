@@ -4,6 +4,7 @@ from datetime import timedelta, datetime, timezone
 from app.core.config import settings
 from app.models.user import User
 from app.exceptions.user import UserNotFound
+from app.exceptions.token import InvalidCredentials
 
 
 class JWTGenerator:
@@ -34,12 +35,12 @@ class JWTGenerator:
             data={"sub":str(user.id)}
         )
 
-    def get_details_from_token(self, token: str, secret_key: str) -> int:
+    def get_details_from_token(self, token: str) -> int:
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
             user_id = int(payload.get("sub"))
         except (JWTError, TypeError, ValueError):
-            raise # Add raise
+            raise InvalidCredentials()
 
         return user_id
 
