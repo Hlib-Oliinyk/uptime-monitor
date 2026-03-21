@@ -14,6 +14,9 @@ class Settings(BaseSettings):
         extra="ignore"
     )
 
+    ALGORITHM: str
+    SECRET_KEY: str
+
     DB_NAME: str
     DB_USER: str
     DB_PASSWORD: str

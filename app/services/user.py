@@ -2,7 +2,7 @@ from app.repositories.user import UserRepository
 from app.schemas.user import UserCreate
 from app.models.user import User
 from app.exceptions.user import UserExists, UserNotFound
-from app.core.security import hash_password
+from app.securities.hashing import hash_password
 
 
 class UserService:
