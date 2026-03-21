@@ -2,6 +2,8 @@ from jose import jwt
 from datetime import timedelta, datetime, timezone
 
 from app.core.config import settings
+from app.models.user import User
+from app.exceptions.user import UserNotFound
 
 
 class JWTGenerator:
@@ -24,3 +26,17 @@ class JWTGenerator:
         encode_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
         return encode_jwt
 
+    def generate_access_token(self, user: User) -> str:
+        if not user:
+            raise UserNotFound()
+
+        return self._generate_jwt_token(
+            data={"sub":str(user.id)}
+        )
+
+
+def get_jwt_token() -> JWTGenerator:
+    return JWTGenerator()
+
+
+jwt_generator: JWTGenerator = get_jwt_token()
