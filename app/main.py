@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.exceptions_handler import setup_exception_handler
+from app.api.endpoints import router
 
 
 app = FastAPI(
@@ -8,6 +9,7 @@ app = FastAPI(
 )
 
 setup_exception_handler(app)
+app.include_router(router)
 
 @app.get("/")
 def root():

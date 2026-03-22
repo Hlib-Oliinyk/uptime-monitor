@@ -15,7 +15,7 @@ async def get_db():
         yield db
 
 
-def get_user_service(db: AsyncSession) -> UserService:
+def get_user_service(db: AsyncSession = Depends(get_db)) -> UserService:
     return UserService(UserRepository(db))
 
 

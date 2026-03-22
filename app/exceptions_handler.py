@@ -27,7 +27,7 @@ def setup_exception_handler(app):
             content={"details": "Monitor not found"}
         )
 
-    @app.exceptions(InvalidCredentials)
+    @app.exception_handler(InvalidCredentials)
     async def invalid_credentials_handler(request, exc):
         return JSONResponse(
             status_code=401,
