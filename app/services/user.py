@@ -5,6 +5,7 @@ from app.schemas.user import UserCreate
 from app.models.user import User
 from app.exceptions.user import UserExists, UserNotFound
 from app.securities.hashing import hash_password, verify_password
+from app.exceptions.token import InvalidCredentials
 
 
 class UserService:
@@ -31,8 +32,8 @@ class UserService:
         self,
         user_email: EmailStr,
         password: str
-    ) -> User | None:
+    ) -> User:
         user = await self.repo.get_by_email(user_email)
         if user is None or not verify_password(password, user.password):
-            return None
+            raise InvalidCredentials()
         return user
