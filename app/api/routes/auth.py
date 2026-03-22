@@ -37,3 +37,11 @@ async def login(
     return {
         "access_token": access_token
     }
+
+
+@router.delete("/logout")
+async def logout(response: Response):
+    response.delete_cookie("access_token")
+    return {
+        "detail": "Logged out"
+    }
