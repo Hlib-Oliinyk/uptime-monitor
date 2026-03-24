@@ -21,11 +21,11 @@ class TokenRepository:
         return result.scalar_one_or_none()
 
     async def save_token(self, **data) -> RefreshToken:
-        refresh_tone = RefreshToken(**data)
-        self.db.add(refresh_tone)
+        refresh_token = RefreshToken(**data)
+        self.db.add(refresh_token)
         await self.db.commit()
-        await self.db.refresh(refresh_tone)
-        return refresh_tone
+        await self.db.refresh(refresh_token)
+        return refresh_token
 
     async def rotate_token_data(
         self,
