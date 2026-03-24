@@ -28,7 +28,7 @@ class JWTGenerator:
         return encode_jwt
 
     def generate_access_token(self, user: User) -> str:
-        if not user:
+        if user is None:
             raise UserNotFound()
 
         return self._generate_jwt_token(

@@ -6,7 +6,9 @@ from app.exceptions.token import InvalidCredentials
 from app.exceptions.user import UserNotFound
 from app.models.user import User
 from app.repositories.user import UserRepository
+from app.repositories.token import TokenRepository
 from app.services.user import UserService
+from app.services.token import TokenService
 from app.securities.authorization.jwt import jwt_generator
 
 
@@ -17,6 +19,10 @@ async def get_db():
 
 def get_user_service(db: AsyncSession = Depends(get_db)) -> UserService:
     return UserService(UserRepository(db))
+
+
+def get_token_service(db: AsyncSession = Depends(get_db)) -> TokenService:
+    return TokenService(TokenRepository(db), UserRepository(db))
 
 
 def get_token_from_header_or_cookie(request: Request) -> str:

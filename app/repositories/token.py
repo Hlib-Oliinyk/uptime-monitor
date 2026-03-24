@@ -2,7 +2,6 @@ from datetime import datetime, timezone, timedelta
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm.sync import update
 
 from app.models.refresh_token import RefreshToken
 
@@ -36,7 +35,7 @@ class TokenRepository:
         await self.db.execute(
             update(RefreshToken)
             .where(RefreshToken.id == old_token_id)
-            .value(is_revoked = True)
+            .values(is_revoked = True)
         )
 
         new_refresh_token = RefreshToken(
@@ -50,10 +49,7 @@ class TokenRepository:
         await self.db.refresh(new_refresh_token)
         return new_refresh_token
 
-    async def delete_token(self, token_hash: str) -> bool:
-        stmt = (update(RefreshToken)
-                .where(RefreshToken.token == token_hash)
-                .values(is_revoked = True))
+    async def delete_token(self, token_hash: str):
+        stmt = update(RefreshToken).where(RefreshToken.token == token_hash).values(is_revoked = True)
         await self.db.execute(stmt)
         await self.db.commit()
-        return True
