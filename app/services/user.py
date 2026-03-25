@@ -1,8 +1,11 @@
+from pydantic import EmailStr
+
 from app.repositories.user import UserRepository
 from app.schemas.user import UserCreate
 from app.models.user import User
 from app.exceptions.user import UserExists, UserNotFound
-from app.core.security import hash_password
+from app.securities.hashing import hash_password, verify_password
+from app.exceptions.token import InvalidCredentials
 
 
 class UserService:
@@ -23,4 +26,14 @@ class UserService:
         user = await self.repo.get_by_id(user_id)
         if user is None:
             raise UserNotFound()
+        return user
+
+    async def authenticate_user(
+        self,
+        user_email: EmailStr,
+        password: str
+    ) -> User:
+        user = await self.repo.get_by_email(user_email)
+        if user is None or not verify_password(password, user.password):
+            raise InvalidCredentials()
         return user
