@@ -7,9 +7,11 @@ from app.models.user import User
 from app.repositories.user import UserRepository
 from app.repositories.token import TokenRepository
 from app.repositories.monitor import MonitorRepository
+from app.repositories.check import CheckRepository
 from app.services.user import UserService
 from app.services.token import TokenService
 from app.services.monitor import MonitorService
+from app.services.check import CheckService
 from app.securities.authorization.jwt import jwt_generator
 
 
@@ -28,6 +30,10 @@ def get_token_service(db: AsyncSession = Depends(get_db)) -> TokenService:
 
 def get_monitor_service(db: AsyncSession = Depends(get_db)) -> MonitorService:
     return MonitorService(MonitorRepository(db))
+
+
+def get_check_service(db: AsyncSession = Depends(get_db)) -> CheckService:
+    return CheckService(CheckRepository(db), MonitorRepository(db))
 
 
 def get_token_from_header_or_cookie(request: Request) -> str:
