@@ -30,7 +30,7 @@ class MonitorRepository:
 
     async def update(self, monitor: Monitor, monitor_update: MonitorUpdate) -> Monitor:
         if monitor_update.url is not None:
-            monitor.url = monitor_update.url
+            monitor.url = str(monitor_update.url)
         if monitor_update.interval is not None:
             monitor.interval = monitor_update.interval
         if monitor_update.is_active is not None:
