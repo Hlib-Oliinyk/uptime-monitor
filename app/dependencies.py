@@ -3,7 +3,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.database import AsyncSessionLocal
 from app.exceptions.token import InvalidCredentials
-from app.exceptions.user import UserNotFound
 from app.models.user import User
 from app.repositories.user import UserRepository
 from app.repositories.token import TokenRepository
@@ -26,7 +25,7 @@ def get_token_service(db: AsyncSession = Depends(get_db)) -> TokenService:
 
 
 def get_token_from_header_or_cookie(request: Request) -> str:
-    auth_header = request.headers.get("Authorized")
+    auth_header = request.headers.get("Authorization")
     if auth_header and auth_header.startswith("Bearer: "):
         return auth_header[7:]
 
@@ -44,7 +43,4 @@ async def get_current_user(
     user_id = jwt_generator.get_details_from_token(token)
 
     user = await user_service.get_user(user_id)
-    if user is None:
-        raise UserNotFound()
-
     return user

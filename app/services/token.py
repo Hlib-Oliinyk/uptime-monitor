@@ -1,7 +1,7 @@
-from datetime import datetime, timezone, timedelta
 import secrets
 
-from app.exceptions.user import UserNotFound
+from datetime import datetime, timezone, timedelta
+
 from app.repositories.token import TokenRepository
 from app.models.refresh_token import RefreshToken
 from app.exceptions.token import InvalidCredentials
@@ -31,7 +31,7 @@ class TokenService:
             expired_at=datetime.now(timezone.utc) + timedelta(days=14)
         )
 
-    async def rotate_refresh_token(self, token: str) -> [str, str]:
+    async def rotate_refresh_token(self, token: str) -> tuple[str, str]:
         token_hash = hash_token(token)
 
         old_token = await self.repo.get_validate_refresh_token(token_hash)

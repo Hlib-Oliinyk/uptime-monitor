@@ -85,7 +85,7 @@ async def refresh(
     if not refresh_token:
         raise InvalidCredentials()
 
-    new_refresh_toke, new_access_token = await service.rotate_refresh_token(refresh_token)
+    new_refresh_token, new_access_token = await service.rotate_refresh_token(refresh_token)
 
     response.set_cookie(
         key="access_token",
@@ -96,7 +96,7 @@ async def refresh(
 
     response.set_cookie(
         key="refresh_token",
-        value=new_refresh_toke,
+        value=new_refresh_token,
         httponly=True,
         samesite="lax",
         max_age=60 * 60 * 24 * 14
@@ -104,6 +104,6 @@ async def refresh(
 
     return {
         "access_token": new_access_token,
-        "refresh_token": new_refresh_toke,
+        "refresh_token": new_refresh_token,
         "token_type": "Bearer"
     }
