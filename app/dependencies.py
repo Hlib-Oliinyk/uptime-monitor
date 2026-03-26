@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import Request, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -20,19 +22,19 @@ async def get_db():
         yield db
 
 
-def get_user_service(db: AsyncSession = Depends(get_db)) -> UserService:
+def get_user_service(db: Annotated[AsyncSession, Depends(get_db)]) -> UserService:
     return UserService(UserRepository(db))
 
 
-def get_token_service(db: AsyncSession = Depends(get_db)) -> TokenService:
+def get_token_service(db: Annotated[AsyncSession, Depends(get_db)]) -> TokenService:
     return TokenService(TokenRepository(db), UserRepository(db))
 
 
-def get_monitor_service(db: AsyncSession = Depends(get_db)) -> MonitorService:
+def get_monitor_service(db: Annotated[AsyncSession, Depends(get_db)]) -> MonitorService:
     return MonitorService(MonitorRepository(db))
 
 
-def get_check_service(db: AsyncSession = Depends(get_db)) -> CheckService:
+def get_check_service(db: Annotated[AsyncSession, Depends(get_db)]) -> CheckService:
     return CheckService(CheckRepository(db), MonitorRepository(db))
 
 
@@ -49,8 +51,8 @@ def get_token_from_header_or_cookie(request: Request) -> str:
 
 
 async def get_current_user(
-    token: str = Depends(get_token_from_header_or_cookie),
-    user_service: UserService = Depends(get_user_service)
+    token: Annotated[str, Depends(get_token_from_header_or_cookie)],
+    user_service: Annotated[UserService, Depends(get_user_service)]
 ) -> User:
     user_id = jwt_generator.get_details_from_token(token)
     user = await user_service.get_user(user_id)
