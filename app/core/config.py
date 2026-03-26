@@ -20,11 +20,16 @@ class Settings(BaseSettings):
     DB_NAME: str
     DB_USER: str
     DB_PASSWORD: str
+    DB_HOST: str
     DB_URL: str = ""
+
+    REDIS_HOST: str
+    REDIS_PORT: int
 
     @model_validator(mode="after")
     def build_db_url(self):
-        self.DB_URL = f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@localhost/{self.DB_NAME}"
+        self.DB_URL = f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}/{self.DB_NAME}"
         return self
+
 
 settings = Settings()
