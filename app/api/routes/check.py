@@ -2,9 +2,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
+from app.schemas.check import CheckResponse
 from app.services.check import CheckService
 from app.dependencies import get_check_service, get_current_user
-from app.schemas.monitor import MonitorResponse
 from app.models.user import User
 
 
@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 
-@router.get("/{monitor_id}", response_model=list[MonitorResponse])
+@router.get("/{monitor_id}", response_model=list[CheckResponse])
 async def get_all_checks(
     monitor_id: int,
     current_user: Annotated[User, Depends(get_current_user)],
