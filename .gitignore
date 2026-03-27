@@ -30,3 +30,5 @@ pytest_cache/
 *.zip
 *.tar
 *.gz
+
+celerybeat-schedule

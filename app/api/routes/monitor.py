@@ -6,6 +6,7 @@ from app.services.monitor import MonitorService
 from app.dependencies import get_monitor_service, get_current_user
 from app.models.user import User
 from app.schemas.monitor import MonitorResponse, MonitorCreate, MonitorUpdate
+from app.tasks.check_monitor import check_monitor_task
 
 
 router = APIRouter(
@@ -39,6 +40,7 @@ async def create_monitor(
     service: Annotated[MonitorService, Depends(get_monitor_service)],
 ):
     monitor = await service.create_monitor(current_user.id, data)
+    check_monitor_task.delay(monitor.id)
     return monitor
 
 
