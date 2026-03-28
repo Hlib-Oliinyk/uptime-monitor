@@ -24,3 +24,10 @@ class MonitorResponse(BaseModel):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class MonitorStats(BaseModel):
+    uptime_percentage: float
+    avg_response_time: float
+    total_checks: int
+    last_check: datetime

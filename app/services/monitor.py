@@ -4,6 +4,7 @@ from app.repositories.monitor import MonitorRepository
 from app.models.monitor import Monitor
 from app.schemas.monitor import MonitorCreate, MonitorUpdate
 from app.exceptions.monitor import MonitorNotFound
+from app.tasks.check_monitor import check_monitor_task
 
 
 class MonitorService:
@@ -13,7 +14,10 @@ class MonitorService:
     async def create_monitor(self, user_id: int, data: MonitorCreate) -> Monitor:
         monitor_dict = data.model_dump(mode="json")
         monitor_dict["user_id"] = user_id
-        return await self.repo.create(**monitor_dict)
+        monitor = await self.repo.create(**monitor_dict)
+
+        check_monitor_task.delay(monitor.id)
+        return monitor
 
     async def get_monitor(self, monitor_id: int, user_id: int) -> Monitor:
         monitor = await self.repo.get_by_id(monitor_id)

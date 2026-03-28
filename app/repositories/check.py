@@ -1,6 +1,7 @@
 from typing import Sequence
+from datetime import datetime
 
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.check import Check
@@ -21,3 +22,22 @@ class CheckRepository:
         await self.db.commit()
         await self.db.refresh(check)
         return check
+
+    async def successful_checks(self, monitor_id: int) -> int:
+        stmt = select(func.count(Check)).where(Check.monitor_id == monitor_id, Check.status_code < 400)
+        result = await self.db.execute(stmt)
+        return result.scalar()
+
+    async def total_checks(self, monitor_id: int) -> int:
+        checks = await self.get_all_by_monitor_id(monitor_id)
+        return len(checks)
+
+    async def avg_response_time(self, monitor_id: int) -> float:
+        stmt = select(func.avg(Check.response_time)).where(Check.monitor_id == monitor_id)
+        result = await self.db.execute(stmt)
+        return round(result.scalar(), 3)
+
+    async def last_check(self, monitor_id: int) -> datetime:
+        stmt = select(func.max(Check.checked_at)).where(Check.monitor_id == monitor_id)
+        result = await self.db.execute(stmt)
+        return result.scalar()
