@@ -28,9 +28,7 @@ class CheckService:
         return checks
 
     async def uptime_percentage(self, monitor_id: int, total_checks: int) -> float:
-        total_checks = await self.repo.total_checks(monitor_id)
         successful_checks = await self.repo.successful_checks(monitor_id)
-
         percentage = CheckService.calculate_percentage(total_checks, successful_checks)
         return percentage
 
