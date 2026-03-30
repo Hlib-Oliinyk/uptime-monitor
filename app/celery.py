@@ -7,5 +7,5 @@ app = Celery(
     "tasks",
     broker=f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
     backend=f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
-    include=["app.tasks.check_monitor"]
+    include=["app.tasks.check_monitor", "app.tasks.restart_active_monitors"]
 )

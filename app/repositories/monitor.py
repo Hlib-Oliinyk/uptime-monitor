@@ -44,3 +44,8 @@ class MonitorRepository:
         await self.db.delete(monitor)
         await self.db.commit()
         return True
+
+    async def get_active_monitors(self) -> Sequence[Monitor]:
+        stmt = select(Monitor).where(Monitor.is_active == True)
+        result = await self.db.execute(stmt)
+        return result.scalars().all()
