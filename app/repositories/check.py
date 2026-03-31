@@ -38,7 +38,7 @@ class CheckRepository:
         return check
 
     async def successful_checks(self, monitor_id: int) -> int:
-        stmt = select(func.count(Check)).where(Check.monitor_id == monitor_id, Check.status_code < 400)
+        stmt = select(func.count(Check.id)).where(Check.monitor_id == monitor_id, Check.status_code < 400)
         result = await self.db.execute(stmt)
         return result.scalar()
 

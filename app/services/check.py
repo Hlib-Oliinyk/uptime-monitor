@@ -34,8 +34,7 @@ class CheckService:
         checks = await self.repo.get_all_by_monitor_id_with_pagination(monitor_id, pagination)
         return checks
 
-    async def uptime_percentage(self, monitor_id: int) -> float:
-        total_checks = await self.repo.total_checks(monitor_id)
+    async def uptime_percentage(self, monitor_id: int, total_checks: int) -> float:
         successful_checks = await self.repo.successful_checks(monitor_id)
         percentage = CheckService.calculate_percentage(total_checks, successful_checks)
         return percentage
@@ -45,10 +44,12 @@ class CheckService:
         if monitor is None or monitor.user_id != user_id:
             raise MonitorNotFound()
 
+        total_checks = await self.repo.total_checks(monitor_id)
+
         stats = {
-            "uptime_percentage": await self.uptime_percentage(monitor_id),
+            "uptime_percentage": await self.uptime_percentage(monitor_id, total_checks),
             "avg_response_time": await self.repo.avg_response_time(monitor_id),
-            "total_checks": await self.repo.total_checks(monitor_id),
+            "total_checks": total_checks,
             "last_check": await self.repo.last_check(monitor_id)
         }
         return stats
