@@ -1,6 +1,8 @@
-from typing import Sequence
+from typing import Sequence, Annotated
+from fastapi import Depends
 
 from app.models.check import Check
+from app.schemas.check import CheckPagination
 from app.repositories.check import CheckRepository
 from app.repositories.monitor import MonitorRepository
 from app.exceptions.monitor import MonitorNotFound
@@ -19,15 +21,21 @@ class CheckService:
         percentage = (successful * 100) / total
         return round(percentage, 2)
 
-    async def get_all_checks(self, monitor_id: int, user_id: int) -> Sequence[Check]:
+    async def get_all_checks(
+        self,
+        monitor_id: int,
+        user_id: int,
+        pagination: Annotated[CheckPagination, Depends(CheckPagination)]
+    ) -> Sequence[Check]:
         monitor = await self.monitor_repo.get_by_id(monitor_id)
         if monitor is None or monitor.user_id != user_id:
             raise MonitorNotFound()
 
-        checks = await self.repo.get_all_by_monitor_id(monitor_id)
+        checks = await self.repo.get_all_by_monitor_id_with_pagination(monitor_id, pagination)
         return checks
 
-    async def uptime_percentage(self, monitor_id: int, total_checks: int) -> float:
+    async def uptime_percentage(self, monitor_id: int) -> float:
+        total_checks = await self.repo.total_checks(monitor_id)
         successful_checks = await self.repo.successful_checks(monitor_id)
         percentage = CheckService.calculate_percentage(total_checks, successful_checks)
         return percentage
@@ -37,12 +45,10 @@ class CheckService:
         if monitor is None or monitor.user_id != user_id:
             raise MonitorNotFound()
 
-        total_checks = await self.repo.total_checks(monitor_id)
-
         stats = {
-            "uptime_percentage": await self.uptime_percentage(monitor_id, total_checks),
+            "uptime_percentage": await self.uptime_percentage(monitor_id),
             "avg_response_time": await self.repo.avg_response_time(monitor_id),
-            "total_checks": total_checks,
+            "total_checks": await self.repo.total_checks(monitor_id),
             "last_check": await self.repo.last_check(monitor_id)
         }
         return stats

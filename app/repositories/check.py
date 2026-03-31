@@ -1,15 +1,29 @@
-from typing import Sequence
+from typing import Sequence, Annotated
 from datetime import datetime
 
+from fastapi import Depends
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.check import Check
+from app.schemas.check import CheckPagination
 
 
 class CheckRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
+
+    async def get_all_by_monitor_id_with_pagination(
+        self,
+        monitor_id: int,
+        pagination: Annotated[CheckPagination, Depends(CheckPagination)]
+    ) -> Sequence[Check]:
+        stmt = (select(Check).where(Check.monitor_id == monitor_id)
+                .limit(pagination.limit)
+                .offset(pagination.offset))
+
+        result = await self.db.execute(stmt)
+        return result.scalars().all()
 
     async def get_all_by_monitor_id(self, monitor_id: int) -> Sequence[Check]:
         stmt = select(Check).where(Check.monitor_id == monitor_id)
