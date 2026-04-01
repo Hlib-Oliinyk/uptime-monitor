@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from app.exceptions.user import UserExists, UserNotFound
 from app.exceptions.monitor import MonitorNotFound
 from app.exceptions.token import InvalidCredentials
+from app.exceptions.check import CheckNotFound
 
 
 def setup_exception_handler(app):
@@ -33,4 +34,11 @@ def setup_exception_handler(app):
             status_code=401,
             content={"detail": "Could not validate credentials"},
             headers={"WWW-Authenticate": "Bearer"}
+        )
+
+    @app.exception_handler(CheckNotFound)
+    async def check_not_found_handler(request, exc):
+        return JSONResponse(
+            status_code=404,
+            content={"details": "Checks not found"}
         )

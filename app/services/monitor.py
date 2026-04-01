@@ -36,7 +36,12 @@ class MonitorService:
         data: MonitorUpdate
     ) -> Monitor:
         monitor = await self.get_monitor(monitor_id, user_id)
-        return await self.repo.update(monitor, data)
+        updated_monitor = await self.repo.update(monitor, data)
+
+        if updated_monitor.is_active:
+            check_monitor_task.delay(updated_monitor.id)
+
+        return updated_monitor
 
     async def delete_monitor(self, monitor_id: int, user_id: int) -> bool:
         monitor = await self.get_monitor(monitor_id, user_id)

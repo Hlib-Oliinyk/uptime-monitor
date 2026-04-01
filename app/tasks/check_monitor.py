@@ -24,7 +24,10 @@ async def check_monitor(monitor_id: int):
             return
 
         async with httpx.AsyncClient(verify=False) as client:
-            response = await client.get(monitor.url)
+            try:
+                response = await client.get(monitor.url)
+            except httpx.ConnectError:
+                return
 
             response_time = response.elapsed.total_seconds()
             status_code = response.status_code

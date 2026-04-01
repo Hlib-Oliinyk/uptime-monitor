@@ -3,9 +3,10 @@ from fastapi import Depends
 
 from app.models.check import Check
 from app.schemas.check import CheckPagination
+from app.exceptions.check import CheckNotFound
+from app.exceptions.monitor import MonitorNotFound
 from app.repositories.check import CheckRepository
 from app.repositories.monitor import MonitorRepository
-from app.exceptions.monitor import MonitorNotFound
 
 
 class CheckService:
@@ -45,6 +46,9 @@ class CheckService:
             raise MonitorNotFound()
 
         total_checks = await self.repo.total_checks(monitor_id)
+
+        if total_checks == 0:
+            raise CheckNotFound()
 
         stats = {
             "uptime_percentage": await self.uptime_percentage(monitor_id, total_checks),
