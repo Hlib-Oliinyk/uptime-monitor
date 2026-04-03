@@ -1,8 +1,8 @@
 from typing import Sequence, Annotated
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from fastapi import Depends
-from sqlalchemy import select, func
+from sqlalchemy import select, func, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.check import Check
@@ -55,3 +55,9 @@ class CheckRepository:
         stmt = select(func.max(Check.checked_at)).where(Check.monitor_id == monitor_id)
         result = await self.db.execute(stmt)
         return result.scalar()
+
+    async def delete_inactive_checks(self) -> int:
+        stmt = delete(Check).where(Check.checked_at < datetime.now() - timedelta(days=1))
+        result = await self.db.execute(stmt)
+        await self.db.commit()
+        return result.rowcount
