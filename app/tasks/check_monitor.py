@@ -24,10 +24,27 @@ async def check_monitor(monitor_id: int):
             return
 
         async with httpx.AsyncClient(verify=False) as client:
-            try:
-                response = await client.get(monitor.url)
-            except httpx.ConnectError:
-                return
+            error_count = 0
+            for _ in range(3):
+                try:
+                    response = await client.get(monitor.url)
+                    if response.status_code >= 500:
+                        error_count += 1
+                except (httpx.ConnectError, httpx.TimeoutException):
+                    error_count += 1
+
+                if error_count == 0:
+                    break
+                await asyncio.sleep(5)
+
+            if error_count == 3:
+                check_dict = {
+                    "monitor_id": monitor_id,
+                    "status_code": 500,
+                    "response_time": 0,
+                }
+                await check_repo.create(**check_dict)
+                return monitor.interval
 
             response_time = response.elapsed.total_seconds()
             status_code = response.status_code
@@ -37,7 +54,6 @@ async def check_monitor(monitor_id: int):
                 "status_code": status_code,
                 "response_time": response_time,
             }
-
             await check_repo.create(**check_dict)
 
     return monitor.interval
