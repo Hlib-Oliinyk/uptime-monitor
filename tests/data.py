@@ -1,10 +1,16 @@
 TEST_USER = {
     "email": "test@gmail.com",
     "username": "test",
-    "password": "secretpassword"
+    "password": "secret-password"
 }
 
 TEST_LOGIN = {
     "email": "test@gmail.com",
-    "password": "secretpassword"
+    "password": "secret-password"
+}
+
+TEST_MONITOR = {
+    "url": "https://example.com/",
+    "interval": 30,
+    "is_active": "true"
 }

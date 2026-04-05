@@ -29,6 +29,11 @@ async def override_dependencies():
     app.dependency_overrides.clear()
 
 
+@pytest_asyncio.fixture(autouse=True)
+async def mock_celery_task(mocker):
+    mocker.patch("app.tasks.check_monitor.check_monitor_task.delay")
+
+
 @pytest_asyncio.fixture
 async def async_client():
     async with AsyncClient(
