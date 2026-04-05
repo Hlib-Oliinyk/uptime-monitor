@@ -23,6 +23,8 @@ class Settings(BaseSettings):
     DB_HOST: str
     DB_URL: str = ""
 
+    TEST_DB_URL: str
+
     REDIS_HOST: str
     REDIS_PORT: int
 
