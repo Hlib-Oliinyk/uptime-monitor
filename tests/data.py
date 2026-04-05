@@ -12,5 +12,11 @@ TEST_LOGIN = {
 TEST_MONITOR = {
     "url": "https://example.com/",
     "interval": 30,
-    "is_active": "true"
+    "is_active": True
+}
+
+TEST_CHECK = {
+    "monitor_id": 1,
+    "status_code": 200,
+    "response_time": 0.5
 }

@@ -29,7 +29,7 @@ async def test_get_monitor_not_exist(authorized_client):
 async def test_get_all_monitors(authorized_client):
     response = await authorized_client.get("/monitor/")
     assert response.status_code == 200
-    assert len(response.json()) == 2
+    assert len(response.json()) == 3
 
 
 @pytest.mark.asyncio
