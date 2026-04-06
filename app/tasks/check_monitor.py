@@ -25,7 +25,7 @@ async def check_monitor(monitor_id: int):
 
         async with httpx.AsyncClient(verify=False) as client:
             error_count = 0
-            for _ in range(3):
+            for _ in range(settings.REQUEST_ATTEMPTS):
                 try:
                     response = await client.get(monitor.url)
                     if response.status_code >= 500:
@@ -37,7 +37,7 @@ async def check_monitor(monitor_id: int):
                     break
                 await asyncio.sleep(5)
 
-            if error_count == 3:
+            if error_count == settings.REQUEST_ATTEMPTS:
                 check_dict = {
                     "monitor_id": monitor_id,
                     "status_code": 500,

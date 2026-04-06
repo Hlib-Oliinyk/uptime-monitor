@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int
 
+    CHECK_LIFESPAN: int
+    REQUEST_ATTEMPTS: int
+
     @model_validator(mode="after")
     def build_db_url(self):
         self.DB_URL = f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}/{self.DB_NAME}"

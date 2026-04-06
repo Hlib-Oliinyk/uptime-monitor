@@ -6,6 +6,7 @@ from sqlalchemy import select, func, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.check import Check
+from app.core.config import settings
 from app.schemas.check import CheckPagination
 
 
@@ -57,7 +58,7 @@ class CheckRepository:
         return result.scalar()
 
     async def delete_inactive_checks(self) -> int:
-        stmt = delete(Check).where(Check.checked_at < datetime.now() - timedelta(days=1))
+        stmt = delete(Check).where(Check.checked_at < datetime.now() - timedelta(days=settings.CHECK_LIFESPAN))
         result = await self.db.execute(stmt)
         await self.db.commit()
         return result.rowcount
