@@ -8,7 +8,7 @@ from app.services.token import TokenService
 from app.dependencies import get_user_service, get_token_service
 from app.schemas.user import UserCreate, UserResponse, UserLogin
 from app.securities.authorization.jwt import jwt_generator
-from app.exceptions.token import InvalidCredentials
+from app.utils.exceptions.token import InvalidCredentials
 
 
 router = APIRouter(

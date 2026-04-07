@@ -3,9 +3,9 @@ from typing import Annotated
 from fastapi import Request, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.database import AsyncSessionLocal
-from app.exceptions.token import InvalidCredentials
 from app.models.user import User
+from app.db.database import AsyncSessionLocal
+from app.utils.exceptions.token import InvalidCredentials
 from app.repositories.user import UserRepository
 from app.repositories.token import TokenRepository
 from app.repositories.monitor import MonitorRepository

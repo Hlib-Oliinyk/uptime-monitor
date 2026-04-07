@@ -3,9 +3,9 @@ from pydantic import EmailStr
 from app.repositories.user import UserRepository
 from app.schemas.user import UserCreate
 from app.models.user import User
-from app.exceptions.user import UserExists, UserNotFound
+from app.utils.exceptions.user import UserExists, UserNotFound
 from app.securities.hashing import hash_password, verify_password
-from app.exceptions.token import InvalidCredentials
+from app.utils.exceptions.token import InvalidCredentials
 
 
 class UserService:

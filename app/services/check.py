@@ -3,8 +3,8 @@ from fastapi import Depends
 
 from app.models.check import Check
 from app.schemas.check import CheckPagination
-from app.exceptions.check import CheckNotFound
-from app.exceptions.monitor import MonitorNotFound
+from app.utils.exceptions.check import CheckNotFound
+from app.utils.exceptions.monitor import MonitorNotFound
 from app.repositories.check import CheckRepository
 from app.repositories.monitor import MonitorRepository
 

@@ -1,9 +1,9 @@
 from fastapi.responses import JSONResponse
 
-from app.exceptions.user import UserExists, UserNotFound
-from app.exceptions.monitor import MonitorNotFound
-from app.exceptions.token import InvalidCredentials
-from app.exceptions.check import CheckNotFound
+from app.utils.exceptions.user import UserExists, UserNotFound
+from app.utils.exceptions.monitor import MonitorNotFound
+from app.utils.exceptions.token import InvalidCredentials
+from app.utils.exceptions.check import CheckNotFound
 
 
 def setup_exception_handler(app):

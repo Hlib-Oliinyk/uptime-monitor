@@ -3,8 +3,8 @@ from datetime import timedelta, datetime, timezone
 
 from app.core.config import settings
 from app.models.user import User
-from app.exceptions.user import UserNotFound
-from app.exceptions.token import InvalidCredentials
+from app.utils.exceptions.user import UserNotFound
+from app.utils.exceptions.token import InvalidCredentials
 
 
 class JWTGenerator:

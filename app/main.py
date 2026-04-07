@@ -1,7 +1,10 @@
+import logging
+
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
 from app.api.endpoints import router
+from app.utils.logger import HTTPLoggerMiddleware
 from app.exceptions_handler import setup_exception_handler
 from app.tasks.restart_active_monitors import restart_active_monitors_task
 
@@ -17,9 +20,12 @@ app = FastAPI(
     docs_url="/api/docs"
 )
 
+logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
 
-setup_exception_handler(app)
 app.include_router(router)
+setup_exception_handler(app)
+app.add_middleware(HTTPLoggerMiddleware)
+
 
 @app.get("/")
 def root():

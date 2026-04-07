@@ -3,7 +3,7 @@ from typing import Sequence
 from app.repositories.monitor import MonitorRepository
 from app.models.monitor import Monitor
 from app.schemas.monitor import MonitorCreate, MonitorUpdate
-from app.exceptions.monitor import MonitorNotFound
+from app.utils.exceptions.monitor import MonitorNotFound
 from app.tasks.check_monitor import check_monitor_task
 
 

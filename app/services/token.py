@@ -4,7 +4,7 @@ from datetime import datetime, timezone, timedelta
 
 from app.repositories.token import TokenRepository
 from app.models.refresh_token import RefreshToken
-from app.exceptions.token import InvalidCredentials
+from app.utils.exceptions.token import InvalidCredentials
 from app.repositories.user import UserRepository
 from app.securities.hashing import hash_token
 from app.securities.authorization.jwt import jwt_generator
