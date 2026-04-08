@@ -13,7 +13,7 @@ class Monitor(Base):
     url: Mapped[str] = mapped_column(nullable=False)
     interval: Mapped[int] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(nullable=False)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
     user: Mapped["User"] = relationship(back_populates="monitors")
